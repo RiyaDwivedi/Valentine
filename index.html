@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine 💙</title>
+
+<style>
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: 'Poppins', Arial, sans-serif;
+        background: linear-gradient(135deg, #e0f2fe, #bae6fd, #7dd3fc);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    /* ❤️ FLOATING HEARTS */
+    .hearts-container {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .heart {
+        position: absolute;
+        bottom: -30px;
+        opacity: 0.6;
+        animation: floatUp linear forwards;
+        user-select: none;
+    }
+
+    @keyframes floatUp {
+        from { transform: translateY(0) scale(1); opacity: 0.8; }
+        to { transform: translateY(-120vh) scale(1.5); opacity: 0; }
+    }
+
+    .card, #accepted {
+        position: relative;
+        z-index: 2;
+    }
+
+    .card {
+        background: #ffffff;
+        border-radius: 22px;
+        padding: 40px 25px;
+        width: 420px;
+        max-width: 90vw;
+        text-align: center;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-bottom: 40px;
+        color: #0f172a;
+    }
+
+    .buttons {
+        position: relative;
+        height: 160px;
+        overflow: hidden;
+    }
+
+    button {
+        position: absolute;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+        padding: 6px 10px;
+        border-radius: 10px;
+        transition: transform 0.15s ease;
+    }
+
+    #yes {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+        left: 20px;
+        top: 80px;
+        box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+    }
+
+    #yes:hover {
+        transform: scale(1.1);
+    }
+
+    #no {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        right: 20px;
+        top: 80px;
+        box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+    }
+
+    #accepted {
+        display: none;
+        text-align: center;
+        animation: fadeIn 1s ease;
+    }
+
+    #accepted h2 {
+        font-size: 34px;
+        color: #0f172a;
+    }
+
+    #accepted p {
+        font-size: 18px;
+        color: #1e293b;
+        margin: 10px 0;
+    }
+
+    #accepted img {
+        width: 260px;
+        max-width: 90%;
+        border-radius: 20px;
+        margin: 20px 0;
+    }
+
+    #letter-link {
+        margin-top: 15px;
+        font-size: 17px;
+        color: #2563eb;
+        cursor: pointer;
+        font-weight: 600;
+        text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- ❤️ HEARTS -->
+<div class="hearts-container"></div>
+
+<!-- QUESTION -->
+<div class="card" id="question">
+    <h1>Hey Laddu, will you be my Valentine? 💙</h1>
+    <div class="buttons" id="buttonBox">
+        <button id="yes">Yes 💖</button>
+        <button id="no">No 💔</button>
+    </div>
+</div>
+
+<!-- ACCEPTED -->
+<div id="accepted">
+    <h2>💙 YAY!!! 💙</h2>
+    <p>Best decision ever 😘</p>
+    <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif">
+    <p>I love you Honey Bunny!! ❤️</p>
+</div>
+
+<script>
+    /* ❤️ HEARTS */
+    const heartsContainer = document.querySelector(".hearts-container");
+    setInterval(() => {
+        for (let i = 0; i < 3; i++) {
+            const h = document.createElement("div");
+            h.className = "heart";
+            h.textContent = Math.random() > 0.5 ? "💙" : "❤️";
+            h.style.fontSize = Math.random() * 20 + 18 + "px";
+            h.style.left = Math.random() * 100 + "vw";
+            h.style.animationDuration = Math.random() * 2 + 3 + "s";
+            heartsContainer.appendChild(h);
+            setTimeout(() => h.remove(), 6000);
+        }
+    }, 250);
+
+    /* 🎯 BUTTON LOGIC */
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const box = document.getElementById("buttonBox");
+    const question = document.getElementById("question");
+    const accepted = document.getElementById("accepted");
+
+    const messages = [
+        "Ban jao na ji 🥺",
+        "Please na 😔👉👈",
+        "Mann bhi jao na 🥹💙",
+        "Manoge kaise nahi 😢❤️"
+    ];
+
+    let msgIndex = 0;
+    let lastChangeTime = 0;
+    let yesHovered = false;
+
+    const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+    function moveNoButtonFar() {
+        const boxRect = box.getBoundingClientRect();
+        const btnRect = noBtn.getBoundingClientRect();
+        const pad = 8;
+
+        const x = Math.random() * (boxRect.width - btnRect.width - pad);
+        const y = Math.random() * (boxRect.height - btnRect.height - pad);
+
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+        noBtn.style.right = "auto";
+    }
+
+    function updateMessage() {
+        const now = Date.now();
+        if (now - lastChangeTime > 1000) {
+            noBtn.innerText = messages[msgIndex];
+            msgIndex = (msgIndex + 1) % messages.length;
+            lastChangeTime = now;
+        }
+    }
+
+    /* 🖱 DESKTOP */
+    box.addEventListener("mousemove", (e) => {
+        if (isTouchDevice || yesHovered) return;
+        const r = noBtn.getBoundingClientRect();
+        const d = Math.hypot(
+            e.clientX - (r.left + r.width / 2),
+            e.clientY - (r.top + r.height / 2)
+        );
+        if (d < 180) {
+            moveNoButtonFar();
+            updateMessage();
+        }
+    });
+
+    /* 📱 MOBILE */
+    if (isTouchDevice) {
+        noBtn.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            moveNoButtonFar();
+            updateMessage();
+        });
+    }
+
+    yesBtn.addEventListener("click", () => {
+        question.style.display = "none";
+        accepted.style.display = "block";
+    });
+</script>
+
+</body>
+</html>
